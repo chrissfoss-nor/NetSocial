@@ -5,6 +5,22 @@ process.env.DB_PATH = ':memory:';
 
 const app = require('../app');
 
+// Helper: extract the csrf_token from a Set-Cookie header
+function extractCsrfToken(res) {
+  const cookies = res.headers['set-cookie'] || [];
+  for (const cookie of cookies) {
+    const match = cookie.match(/csrf_token=([^;]+)/);
+    if (match) return decodeURIComponent(match[1]);
+  }
+  return null;
+}
+
+// Helper: perform a GET to seed the CSRF cookie, then return the token
+async function getCsrfToken(agent) {
+  const res = await agent.get('/');
+  return extractCsrfToken(res);
+}
+
 describe('POST /api/auth/register', () => {
   test('rejects non-student email', async () => {
     const res = await request(app).post('/api/auth/register').send({
@@ -158,5 +174,48 @@ describe('Posts API', () => {
   test('rejects post content over 500 chars', async () => {
     const res = await agent.post('/api/posts').send({ content: 'x'.repeat(501) });
     expect(res.status).toBe(400);
+  });
+});
+
+describe('CSRF protection', () => {
+  test('browser session POST without CSRF token header is rejected', async () => {
+    const agent = request.agent(app);
+    // Seed the csrf_token cookie via a GET
+    await getCsrfToken(agent);
+    // Now POST without the header – should be rejected
+    const res = await agent.post('/api/auth/register').send({
+      name: 'BadActor',
+      email: 'badactor@stud.ntnu.no',
+      password: 'password123',
+    });
+    expect(res.status).toBe(403);
+  });
+
+  test('browser session POST with correct CSRF token is accepted', async () => {
+    const agent = request.agent(app);
+    const csrfToken = await getCsrfToken(agent);
+    const res = await agent
+      .post('/api/auth/register')
+      .set('X-CSRF-Token', csrfToken)
+      .send({
+        name: 'Good Student',
+        email: 'goodstudent@stud.oslomet.no',
+        password: 'password123',
+      });
+    expect(res.status).toBe(201);
+  });
+
+  test('browser session POST with wrong CSRF token is rejected', async () => {
+    const agent = request.agent(app);
+    await getCsrfToken(agent); // seed cookie
+    const res = await agent
+      .post('/api/auth/register')
+      .set('X-CSRF-Token', 'wrongtoken')
+      .send({
+        name: 'Hacker',
+        email: 'hacker@stud.ntnu.no',
+        password: 'password123',
+      });
+    expect(res.status).toBe(403);
   });
 });

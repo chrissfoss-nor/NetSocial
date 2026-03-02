@@ -45,6 +45,11 @@
   </main>
 
   <script>
+    function getCsrfToken() {
+      const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]+)/);
+      return match ? decodeURIComponent(match[1]) : '';
+    }
+
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const errorEl = document.getElementById('error-msg');
@@ -59,7 +64,7 @@
       try {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
           body: JSON.stringify(body),
         });
         const data = await res.json();

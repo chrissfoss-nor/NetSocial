@@ -37,6 +37,11 @@
   </main>
 
   <script>
+    function getCsrfToken() {
+      const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]+)/);
+      return match ? decodeURIComponent(match[1]) : '';
+    }
+
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const errorEl = document.getElementById('error-msg');
@@ -45,7 +50,7 @@
       try {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': getCsrfToken() },
           body: JSON.stringify({
             email: e.target.email.value,
             password: e.target.password.value,
