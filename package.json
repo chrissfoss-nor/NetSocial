@@ -1,0 +1,37 @@
+{
+  "name": "netsocial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest --testPathPatterns=tests/"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 15000
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrissfoss-nor/NetSocial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chrissfoss-nor/NetSocial/issues"
+  },
+  "homepage": "https://github.com/chrissfoss-nor/NetSocial#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.6.2",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
+  }
+}

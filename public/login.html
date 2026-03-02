@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log in – NetSocial</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="auth-page">
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="/">NetSocial</a>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <h1>Log in</h1>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="email">Student email</label>
+          <input type="email" id="email" name="email" required placeholder="ola@stud.ntnu.no" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <div id="error-msg" class="alert alert-error hidden"></div>
+
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      </form>
+
+      <p class="auth-footer">Don't have an account? <a href="/register">Sign up</a></p>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errorEl = document.getElementById('error-msg');
+      errorEl.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: e.target.email.value,
+            password: e.target.password.value,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errorEl.textContent = data.error || 'Login failed';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+        window.location.href = '/feed';
+      } catch {
+        errorEl.textContent = 'Network error. Please try again.';
+        errorEl.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
