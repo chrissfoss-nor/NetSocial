@@ -9,6 +9,9 @@ A cross-platform social networking application with a [Next.js](https://nextjs.o
 - [Node.js](https://nodejs.org/) (v20.19.4 or later)
 
 ### Getting Started
+A social networking application built with [Next.js](https://nextjs.org/) and [Supabase](https://supabase.com/).
+
+## Getting Started
 
 1. **Install dependencies**
 
@@ -38,6 +41,7 @@ A cross-platform social networking application with a [Next.js](https://nextjs.o
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Supabase Client
+## Supabase Client
 
 The Supabase client is initialised in `lib/supabaseClient.js` and can be imported anywhere in the project:
 
