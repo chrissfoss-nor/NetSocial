@@ -1,7 +1,25 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
-# dependencies
+# Dependencies
 node_modules/
+
+# Next.js build output
+/.next
+/out
+
+# Production
+/build
+
+# Environment variables – do NOT commit real secrets
+.env.local
+.env.*.local
+
+# Debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# Misc
+.DS_Store
+*.pem
 
 # Expo
 .expo/
@@ -21,21 +39,9 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
 # generated native folders
-/ios
-/android
+/mobile/ios
+/mobile/android
+
+# TypeScript
+*.tsbuildinfo

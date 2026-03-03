@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SAMPLE_POSTS = [
   { id: '1', author: 'Alice', content: 'Welcome to NetSocial! 👋', likes: 12 },
@@ -24,7 +25,7 @@ function Post({ author, content, likes }) {
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
       <View style={styles.header}>
         <Text style={styles.headerTitle}>NetSocial</Text>
@@ -37,7 +38,7 @@ export default function App() {
         )}
         contentContainerStyle={styles.feed}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -48,8 +49,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#1877f2',
-    paddingTop: 50,
-    paddingBottom: 14,
+    paddingVertical: 14,
     alignItems: 'center',
   },
   headerTitle: {
