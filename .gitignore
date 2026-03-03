@@ -1,3 +1,6 @@
+node_modules/
+netsocial.db
+*.db
 # Dependencies
 node_modules/
 /node_modules

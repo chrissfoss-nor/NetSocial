@@ -1,21 +1,38 @@
 {
   "name": "netsocial",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "node server.js",
+    "test": "jest --testPathPatterns=tests/"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 15000
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrissfoss-nor/NetSocial.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/chrissfoss-nor/NetSocial/issues"
+  },
+  "homepage": "https://github.com/chrissfoss-nor/NetSocial#readme",
   "dependencies": {
-    "@supabase/supabase-js": "^2.49.1",
-    "next": "^15.2.9",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.6.2",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "eslint": "^9",
-    "eslint-config-next": "^15.2.1"
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
   }
 }
