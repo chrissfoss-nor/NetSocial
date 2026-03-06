@@ -35,47 +35,41 @@ export default function ComposePage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-lg font-semibold text-gray-900 mb-4">Create a Post</h1>
+      <h1 className="text-base font-semibold text-gray-900 mb-4">New Post</h1>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="bg-white border border-gray-200 rounded-lg">
+        <form onSubmit={handleSubmit}>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind?"
-            rows={7}
+            rows={8}
             maxLength={500}
             autoFocus
-            className="w-full resize-none text-gray-900 placeholder-gray-400 text-base leading-relaxed focus:outline-none"
+            className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 leading-relaxed focus:outline-none p-5"
           />
-
-          <div className="border-t border-gray-100 pt-4 flex items-center justify-between">
-            <span
-              className={`text-sm ${
-                remaining < 50 ? "text-orange-500" : "text-gray-400"
-              }`}
-            >
-              {remaining} characters left
+          <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
+            <span className={`text-xs ${remaining < 50 ? "text-orange-500" : "text-gray-400"}`}>
+              {remaining} left
             </span>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="text-sm text-gray-400 hover:text-gray-600"
+                className="text-xs text-gray-400 hover:text-gray-700 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || !content.trim()}
-                className="bg-blue-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                className="bg-gray-900 text-white text-xs font-semibold px-4 py-2 rounded-md hover:bg-gray-700 disabled:opacity-40 transition-colors"
               >
-                {loading ? "Posting..." : "Post"}
+                {loading ? "Posting..." : "Publish"}
               </button>
             </div>
           </div>
-
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-xs text-red-500 px-5 pb-3">{error}</p>}
         </form>
       </div>
     </div>

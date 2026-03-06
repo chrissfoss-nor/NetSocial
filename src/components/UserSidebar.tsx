@@ -15,11 +15,11 @@ type Props = {
 };
 
 const navItems = [
-  { href: "/feed", label: "Home", icon: "⌂" },
-  { href: "/compose", label: "New Post", icon: "✏" },
-  { href: "/meet", label: "Meet Friends", icon: "◎" },
-  { href: "/profile", label: "My Profile", icon: "◉" },
-  { href: "/search", label: "Search", icon: "⌕" },
+  { href: "/feed", label: "Home" },
+  { href: "/compose", label: "New Post" },
+  { href: "/meet", label: "Meet Friends" },
+  { href: "/me", label: "My Space" },
+  { href: "/search", label: "Search" },
 ];
 
 export default function UserSidebar({ user }: Props) {
@@ -28,54 +28,41 @@ export default function UserSidebar({ user }: Props) {
   const initial = displayName[0].toUpperCase();
 
   return (
-    <div className="space-y-4">
-      {/* Profile card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-        <div className="flex flex-col items-center text-center gap-3">
-          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-2xl">
-            {initial}
-          </div>
-          <div>
-            <p className="font-semibold text-gray-900">{displayName}</p>
-            <p className="text-sm text-gray-400">@{user.username}</p>
-          </div>
-          {user.bio && (
-            <p className="text-sm text-gray-500 leading-relaxed">{user.bio}</p>
-          )}
+    <div>
+      {/* User identity */}
+      <div className="flex items-center gap-3 px-2 mb-6 pb-4 border-b border-gray-200">
+        <div className="w-8 h-8 rounded-md bg-gray-900 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+          {initial}
         </div>
-
-        <div className="mt-4 grid grid-cols-3 divide-x divide-gray-100 border-t border-gray-100 pt-4">
-          <div className="text-center">
-            <p className="font-semibold text-gray-900 text-sm">—</p>
-            <p className="text-xs text-gray-400 mt-0.5">Posts</p>
-          </div>
-          <div className="text-center">
-            <p className="font-semibold text-gray-900 text-sm">—</p>
-            <p className="text-xs text-gray-400 mt-0.5">Followers</p>
-          </div>
-          <div className="text-center">
-            <p className="font-semibold text-gray-900 text-sm">—</p>
-            <p className="text-xs text-gray-400 mt-0.5">Following</p>
-          </div>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-gray-900 truncate">{displayName}</p>
+          <p className="text-xs text-gray-400 truncate">@{user.username}</p>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="bg-white rounded-2xl shadow-sm border border-gray-100 p-3">
-        <ul className="space-y-1">
+      <nav>
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-2 mb-2">
+          Menu
+        </p>
+        <ul className="space-y-0.5">
           {navItems.map((item) => {
             const active = pathname === item.href;
             return (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2.5 px-2 py-2 text-sm rounded-md transition-colors ${
                     active
-                      ? "bg-blue-50 text-blue-600"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-gray-100 text-gray-900 font-medium"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                   }`}
                 >
-                  <span className="text-base w-5 text-center">{item.icon}</span>
+                  <span
+                    className={`w-0.5 h-4 rounded-sm flex-shrink-0 transition-colors ${
+                      active ? "bg-blue-600" : "bg-transparent"
+                    }`}
+                  />
                   {item.label}
                 </Link>
               </li>

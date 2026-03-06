@@ -33,45 +33,55 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        <h1 className="text-3xl font-bold text-center mb-2">NetSocial</h1>
-        <p className="text-center text-gray-500 mb-8">Sign in to your account</p>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-6 space-y-4">
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-md bg-gray-900 text-white text-sm font-bold mb-4">
+            N
+          </div>
+          <h1 className="text-xl font-bold text-gray-900">Sign in to NetSocial</h1>
+          <p className="text-sm text-gray-400 mt-1">Enter your credentials to continue</p>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
           {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
+            <div className="mb-4 px-3 py-2 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-xs text-red-600">{error}</p>
+            </div>
           )}
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              name="email"
-              type="email"
-              required
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              name="password"
-              type="password"
-              required
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Email</label>
+              <input
+                name="email"
+                type="email"
+                required
+                className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-gray-600 mb-1.5">Password</label>
+              <input
+                name="password"
+                type="password"
+                required
+                className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gray-900 text-white py-2.5 rounded-md text-sm font-semibold hover:bg-gray-700 disabled:opacity-50 transition-colors"
+            >
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+        </div>
 
         <p className="text-center text-sm text-gray-500 mt-4">
           No account?{" "}
-          <Link href="/register" className="text-blue-600 hover:underline">
+          <Link href="/register" className="text-gray-900 font-semibold hover:underline">
             Sign up
           </Link>
         </p>

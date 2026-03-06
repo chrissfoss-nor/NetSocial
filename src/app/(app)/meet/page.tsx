@@ -9,14 +9,6 @@ type User = {
   image: string | null;
 };
 
-const COLORS = [
-  "bg-blue-100 text-blue-600",
-  "bg-purple-100 text-purple-600",
-  "bg-green-100 text-green-600",
-  "bg-orange-100 text-orange-600",
-  "bg-pink-100 text-pink-600",
-];
-
 export default function MeetPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [followed, setFollowed] = useState<Set<string>>(new Set());
@@ -41,39 +33,50 @@ export default function MeetPage() {
 
   return (
     <div>
-      <h1 className="text-lg font-semibold text-gray-900 mb-1">Meet Other Friends</h1>
-      <p className="text-sm text-gray-400 mb-6">Discover and connect with people on NetSocial</p>
+      <div className="mb-5">
+        <h1 className="text-base font-semibold text-gray-900">Meet Other Friends</h1>
+        <p className="text-sm text-gray-400 mt-0.5">Discover and connect with people on NetSocial</p>
+      </div>
 
       {loading ? (
-        <div className="text-center py-16 text-gray-400 text-sm">Loading...</div>
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3 animate-pulse">
+              <div className="w-9 h-9 rounded-md bg-gray-100 flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 bg-gray-100 rounded w-28" />
+                <div className="h-2.5 bg-gray-100 rounded w-20" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : users.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 text-sm">No other users yet.</div>
+        <div className="bg-white border border-gray-200 rounded-lg p-10 text-center text-sm text-gray-400">
+          No other users yet.
+        </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {users.map((user, i) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {users.map((user) => {
             const displayName = user.name || user.username;
             const isFollowed = followed.has(user.id);
-            const color = COLORS[i % COLORS.length];
             return (
               <div
                 key={user.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex items-center gap-4"
+                className="bg-white border border-gray-200 rounded-lg p-4 flex items-center gap-3"
               >
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${color}`}
-                >
+                <div className="w-9 h-9 rounded-md bg-gray-100 flex items-center justify-center text-gray-700 text-sm font-bold flex-shrink-0">
                   {displayName[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-gray-900 truncate">{displayName}</p>
-                  <p className="text-sm text-gray-400 truncate">@{user.username}</p>
+                  <p className="text-sm font-semibold text-gray-900 truncate">{displayName}</p>
+                  <p className="text-xs text-gray-400 truncate">@{user.username}</p>
                 </div>
                 <button
                   onClick={() => toggleFollow(user.id)}
-                  className={`text-sm font-medium px-4 py-1.5 rounded-full border transition-colors flex-shrink-0 ${
+                  className={`text-xs font-semibold px-3 py-1.5 rounded-md border transition-colors flex-shrink-0 ${
                     isFollowed
-                      ? "border-gray-200 text-gray-500 hover:border-red-200 hover:text-red-500"
-                      : "border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                      ? "border-gray-200 text-gray-500 hover:text-red-500 hover:border-red-200"
+                      : "border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white"
                   }`}
                 >
                   {isFollowed ? "Following" : "Follow"}

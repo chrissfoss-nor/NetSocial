@@ -35,24 +35,21 @@ export default function PostComposer({ onPost }: { onPost: (post: Post) => void 
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-2xl shadow p-4 space-y-3"
-    >
+    <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-4">
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="What's on your mind?"
         rows={3}
         maxLength={500}
-        className="w-full resize-none border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+        className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
       />
-      <div className="flex justify-between items-center">
-        <span className="text-xs text-gray-400">{content.length}/500</span>
+      <div className="flex justify-between items-center pt-3 border-t border-gray-100 mt-2">
+        <span className="text-xs text-gray-400">{content.length} / 500</span>
         <button
           type="submit"
           disabled={loading || !content.trim()}
-          className="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="bg-gray-900 text-white text-xs font-semibold px-4 py-2 rounded-md hover:bg-gray-700 disabled:opacity-40 transition-colors"
         >
           {loading ? "Posting..." : "Post"}
         </button>
