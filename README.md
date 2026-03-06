@@ -1,97 +1,36 @@
-# NetSocial
-
-A cross-platform social networking application with a [Next.js](https://nextjs.org/) + [Supabase](https://supabase.com/) web app and a [React Native](https://reactnative.dev/) + [Expo](https://expo.dev/) mobile app for iOS and Android.
-
-## Web App (Next.js)
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v20.19.4 or later)
-
-### Getting Started
-A social networking application built with [Next.js](https://nextjs.org/) and [Supabase](https://supabase.com/).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-1. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-2. **Configure environment variables**
-
-   Copy the example environment file and fill in your Supabase credentials:
-
-   ```bash
-   cp .env.local.example .env.local
-   ```
-
-   | Variable | Description |
-   |---|---|
-   | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase project anon (public) key |
-
-3. **Run the development server**
-
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Supabase Client
-## Supabase Client
-
-The Supabase client is initialised in `lib/supabaseClient.js` and can be imported anywhere in the project:
-
-```js
-import { supabase } from '../lib/supabaseClient';
-```
-
----
-
-## Mobile App (Expo / React Native)
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v20.19.4 or later)
-- [Expo CLI](https://docs.expo.dev/get-started/installation/)
-- For iOS: a macOS machine with Xcode, or use the [Expo Go](https://expo.dev/client) app
-- For Android: Android Studio with an emulator, or the [Expo Go](https://expo.dev/client) app on a physical device
-
-### Getting Started
+First, run the development server:
 
 ```bash
-cd mobile
-npm install
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-| Platform | Command |
-|----------|---------|
-| Start (choose platform interactively) | `npm start` |
-| Android | `npm run android` |
-| iOS | `npm run ios` |
-| Web (browser preview) | `npm run web` |
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-Scan the QR code shown after `npm start` with the **Expo Go** app ([App Store](https://apps.apple.com/app/expo-go/id982107779) / [Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)).
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### Building for distribution
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Use [EAS Build](https://docs.expo.dev/build/introduction/) to produce production `.ipa` (iOS) and `.apk`/`.aab` (Android) bundles:
+## Learn More
 
-```bash
-npm install -g eas-cli
-eas build --platform ios
-eas build --platform android
-```
+To learn more about Next.js, take a look at the following resources:
 
-### Project structure
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-```
-mobile/
-├── App.js          # Main application component
-├── app.json        # Expo / app configuration (name, icons, splash)
-├── assets/         # App icons and splash screen images
-└── index.js        # Expo entry point
-```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
