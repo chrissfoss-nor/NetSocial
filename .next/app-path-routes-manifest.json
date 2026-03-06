@@ -1,0 +1,12 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/[...nextauth]/route": "/api/auth/[...nextauth]",
+  "/api/posts/[id]/like/route": "/api/posts/[id]/like",
+  "/api/posts/route": "/api/posts",
+  "/api/register/route": "/api/register",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/page": "/login",
+  "/page": "/",
+  "/register/page": "/register"
+}
