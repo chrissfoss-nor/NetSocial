@@ -33,13 +33,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { content } = await req.json();
-  if (!content?.trim()) {
-    return NextResponse.json({ error: "Content required" }, { status: 400 });
+  const { content, imageUrl } = await req.json();
+  if (!content?.trim() && !imageUrl) {
+    return NextResponse.json({ error: "Content or image required" }, { status: 400 });
   }
 
   const post = await prisma.post.create({
-    data: { content, authorId: session.user.id },
+    data: { content: content?.trim() ?? "", imageUrl: imageUrl ?? null, authorId: session.user.id },
     include: {
       author: { select: { id: true, name: true, username: true, image: true } },
       _count: { select: { likes: true, comments: true } },
