@@ -29,33 +29,20 @@ export default function ComposePage() {
     );
     if (files.length === 0) return;
     const newPhotos = files.map((file) => ({ file, preview: URL.createObjectURL(file) }));
-    setPhotos((prev) => [...prev, ...newPhotos]);
-    setSelectedIndex(0);
-  }
-
-  function selectPhoto(index: number) {
-    setSelectedIndex(index);
+    setPhotos((prev) => {
+      const updated = [...prev, ...newPhotos];
+      if (selectedIndex === null) setSelectedIndex(0);
+      return updated;
+    });
   }
 
   function removePhoto(index: number, e: React.MouseEvent) {
     e.stopPropagation();
-    setPhotos((prev) => prev.filter((_, i) => i !== index));
-    setSelectedIndex((prev) => {
-      if (prev === null) return null;
-      if (prev === index) return photos.length > 1 ? 0 : null;
-      if (prev > index) return prev - 1;
-      return prev;
+    setPhotos((prev) => {
+      const next = prev.filter((_, i) => i !== index);
+      setSelectedIndex(next.length === 0 ? null : Math.min(index, next.length - 1));
+      return next;
     });
-  }
-
-  function goBack() {
-    if (step === 2) {
-      setStep(1);
-      setContent("");
-      setError("");
-    } else {
-      router.back();
-    }
   }
 
   const selectedPhoto = selectedIndex !== null ? photos[selectedIndex] : null;
@@ -87,7 +74,6 @@ export default function ComposePage() {
     });
 
     setLoading(false);
-
     if (res.ok) {
       router.push("/feed");
       router.refresh();
@@ -100,60 +86,65 @@ export default function ComposePage() {
   const canPost = !loading && (!!content.trim() || !!selectedPhoto);
 
   return (
-    <div className="max-w-2xl">
-      {/* Step indicator */}
-      <div className="flex items-center gap-0 mb-6">
-        {(["Add Photo", "Write Caption"] as const).map((label, i) => {
-          const active = step === i + 1;
-          const done = step > i + 1;
-          return (
-            <div key={label} className="flex items-center">
-              {i > 0 && <div className={`h-px w-8 ${step > 1 ? "bg-blue-300" : "bg-gray-200"}`} />}
-              <div className={`flex items-center gap-2 px-4 py-2 border text-sm font-medium transition-colors ${
-                i === 0 ? "rounded-l-md" : "rounded-r-md"
-              } ${active ? "bg-blue-600 border-blue-600 text-white" : done ? "bg-blue-50 border-blue-200 text-blue-600" : "bg-white border-gray-200 text-gray-400"}`}>
-                <span className={`w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold ${
-                  active ? "bg-white text-blue-600" : done ? "bg-blue-200 text-blue-700" : "bg-gray-100 text-gray-400"
-                }`}>
-                  {done ? "✓" : i + 1}
-                </span>
-                {label}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+    <div className="max-w-xl">
 
-      {/* Step 1: Photo Selection */}
+      {/* ── STEP 1: Photo picker ── */}
       {step === 1 && (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-
-          {/* Consent screen */}
+        <>
+          {/* Consent */}
           {consent === "pending" && (
-            <div className="p-8 flex flex-col items-center text-center gap-5">
-              <div className="w-16 h-16 bg-blue-50 rounded-lg flex items-center justify-center">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">Allow access to your photos</p>
-                <p className="text-xs text-gray-500 mt-1.5 max-w-xs leading-relaxed">
-                  NetSocial would like to access your photos so you can select images to share in your posts. Your photos are only used when you choose to share them.
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              {/* Hero */}
+              <div className="relative px-8 pt-14 pb-10 flex flex-col items-center text-center"
+                style={{ background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)" }}>
+                {/* Decorative circles */}
+                <div className="absolute top-0 left-0 w-32 h-32 rounded-full opacity-10"
+                  style={{ background: "radial-gradient(circle, white, transparent)", transform: "translate(-40%, -40%)" }} />
+                <div className="absolute bottom-0 right-0 w-40 h-40 rounded-full opacity-10"
+                  style={{ background: "radial-gradient(circle, white, transparent)", transform: "translate(40%, 40%)" }} />
+                <div className="relative w-20 h-20 rounded-2xl flex items-center justify-center mb-5"
+                  style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.2)" }}>
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-bold text-white mb-2">Access Your Photos</h2>
+                <p className="text-sm leading-relaxed max-w-xs" style={{ color: "rgba(255,255,255,0.65)" }}>
+                  NetSocial needs permission to access your photo library to let you share images in your posts.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 w-full max-w-xs">
+
+              {/* Permission details */}
+              <div className="px-6 py-5 space-y-3.5 border-b border-gray-100">
+                {[
+                  { icon: "🔒", label: "Private by default", text: "Photos are never accessed without your action" },
+                  { icon: "✋", label: "You choose", text: "Only the photo you select will be shared" },
+                  { icon: "↩", label: "Revocable", text: "You can deny access at any time" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-start gap-3">
+                    <span className="text-base leading-none mt-0.5 flex-shrink-0">{item.icon}</span>
+                    <div>
+                      <p className="text-xs font-semibold text-gray-800">{item.label}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Actions */}
+              <div className="px-6 py-5 flex flex-col gap-2.5">
                 <button
                   onClick={handleAllow}
-                  className="w-full bg-blue-600 text-white text-sm font-semibold py-2.5 rounded-md hover:bg-blue-700 transition-colors"
+                  className="w-full text-white text-sm font-semibold py-3 rounded-lg transition-all hover:opacity-90 active:scale-[0.98]"
+                  style={{ background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }}
                 >
-                  Allow Access
+                  Allow Photo Access
                 </button>
                 <button
                   onClick={() => setConsent("denied")}
-                  className="w-full bg-white text-gray-500 text-sm font-medium py-2.5 rounded-md border border-gray-200 hover:bg-gray-50 transition-colors"
+                  className="w-full text-gray-500 text-sm font-medium py-3 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Don't Allow
                 </button>
@@ -161,87 +152,155 @@ export default function ComposePage() {
             </div>
           )}
 
-          {/* Denied screen */}
+          {/* Denied */}
           {consent === "denied" && (
-            <div className="p-8 flex flex-col items-center text-center gap-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+            <div className="bg-white border border-gray-200 rounded-xl px-8 py-16 flex flex-col items-center text-center gap-5">
+              <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-900">Photo access denied</p>
-                <p className="text-xs text-gray-400 mt-1">You can still write a text-only post.</p>
+                <p className="text-sm font-semibold text-gray-900 mb-1">Photo access denied</p>
+                <p className="text-xs text-gray-400 leading-relaxed max-w-xs">
+                  You can still write a text-only post, or grant access to add a photo.
+                </p>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 <button
                   onClick={() => setConsent("pending")}
-                  className="text-xs text-blue-600 hover:underline"
+                  className="text-white text-xs font-semibold px-5 py-2 rounded-lg transition-all hover:opacity-90"
+                  style={{ background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }}
                 >
-                  Grant access
+                  Grant Access
                 </button>
-                <span className="text-gray-300">|</span>
                 <button
                   onClick={() => setStep(2)}
-                  className="text-xs text-gray-500 hover:text-gray-800"
+                  className="text-gray-600 text-xs font-medium px-5 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
                 >
-                  Continue without photo
+                  Text only
                 </button>
               </div>
             </div>
           )}
 
-          {/* Photo grid */}
+          {/* Photo picker */}
           {consent === "allowed" && (
-            <div>
-              <div className="px-5 pt-5 pb-3 flex items-center justify-between">
-                <p className="text-sm font-semibold text-gray-900">
-                  {photos.length > 0 ? `${photos.length} photo${photos.length !== 1 ? "s" : ""} selected` : "No photos yet"}
-                </p>
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                <button onClick={() => router.back()} className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
+                  Cancel
+                </button>
+                <h2 className="text-sm font-semibold text-gray-900">New Post</h2>
                 <button
-                  type="button"
-                  onClick={() => fileRef.current?.click()}
-                  className="text-xs text-blue-600 font-medium hover:text-blue-800 transition-colors"
+                  onClick={() => setStep(2)}
+                  disabled={selectedIndex === null}
+                  className="text-sm font-semibold disabled:text-gray-300 transition-colors"
+                  style={{ color: selectedIndex !== null ? "#0f3460" : undefined }}
                 >
-                  + Add more
+                  Next →
                 </button>
               </div>
 
+              {/* Large preview */}
+              <div className="w-full bg-gray-950 relative" style={{ aspectRatio: "1/1", maxHeight: 360 }}>
+                {selectedPhoto ? (
+                  <>
+                    <img
+                      src={selectedPhoto.preview}
+                      alt="Selected"
+                      className="w-full h-full object-cover"
+                      style={{ maxHeight: 360 }}
+                    />
+                    <div className="absolute bottom-3 right-3 text-white text-xs px-2.5 py-1 rounded-full"
+                      style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)" }}>
+                      {selectedIndex! + 1} / {photos.length}
+                    </div>
+                  </>
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-3" style={{ minHeight: 220 }}>
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    <p className="text-xs text-gray-600">Select a photo below</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Toolbar */}
+              <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">
+                  {photos.length > 0 ? `${photos.length} photo${photos.length !== 1 ? "s" : ""}` : "Library"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Add Photos
+                </button>
+              </div>
+
+              {/* Grid */}
               {photos.length === 0 ? (
                 <div
-                  className="mx-5 mb-5 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center py-12 gap-3 cursor-pointer hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                  className="flex flex-col items-center justify-center gap-4 py-14 cursor-pointer group"
                   onClick={() => fileRef.current?.click()}
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </svg>
-                  <p className="text-sm text-gray-400">Click to select photos</p>
+                  <div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-gray-200 transition-colors">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-gray-800">Open photo library</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Tap to select one or more images</p>
+                  </div>
+                  <button
+                    type="button"
+                    className="text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:opacity-90 transition-all"
+                    style={{ background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }}
+                  >
+                    Browse Photos
+                  </button>
                 </div>
               ) : (
-                <div className="px-5 pb-3 grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 gap-0.5 p-0.5 max-h-52 overflow-y-auto bg-gray-100">
                   {photos.map((photo, i) => (
                     <div
                       key={i}
-                      onClick={() => selectPhoto(i)}
-                      className={`relative cursor-pointer rounded-md overflow-hidden aspect-square border-2 transition-all ${
-                        selectedIndex === i ? "border-blue-500 ring-2 ring-blue-200" : "border-transparent hover:border-gray-300"
-                      }`}
+                      onClick={() => setSelectedIndex(i)}
+                      className="relative cursor-pointer aspect-square overflow-hidden"
                     >
-                      <img src={photo.preview} alt="" className="w-full h-full object-cover" />
+                      <img
+                        src={photo.preview}
+                        alt=""
+                        className={`w-full h-full object-cover transition-opacity ${selectedIndex === i ? "opacity-100" : "opacity-75 hover:opacity-95"}`}
+                      />
                       {selectedIndex === i && (
-                        <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        </div>
+                        <>
+                          <div className="absolute inset-0 bg-black/20" />
+                          <div className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center shadow"
+                            style={{ background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }}>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </div>
+                        </>
                       )}
                       <button
                         type="button"
                         onClick={(e) => removePhoto(i, e)}
-                        className="absolute top-1.5 left-1.5 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center text-white text-xs hover:bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ opacity: selectedIndex === i ? 0 : undefined }}
+                        className="absolute top-1 left-1 w-5 h-5 bg-black/60 rounded-full flex items-center justify-center text-white text-[10px] hover:bg-black/80 transition-colors"
                       >
                         ✕
                       </button>
@@ -250,96 +309,84 @@ export default function ComposePage() {
                 </div>
               )}
 
-              <div className="px-5 pb-5 flex items-center justify-between border-t border-gray-100 pt-4">
+              {/* Footer */}
+              <div className="px-5 py-4 border-t border-gray-100 flex items-center justify-between">
                 <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="text-sm text-gray-400 hover:text-gray-700 transition-colors"
+                  onClick={() => setStep(2)}
+                  className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  Cancel
+                  Skip — text only
                 </button>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    className="text-sm text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    Skip photo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    disabled={selectedIndex === null}
-                    className="bg-blue-600 text-white text-sm font-semibold px-5 py-2 rounded-md hover:bg-blue-700 disabled:opacity-40 transition-colors"
-                  >
-                    Next →
-                  </button>
-                </div>
+                <button
+                  onClick={() => setStep(2)}
+                  disabled={selectedIndex === null}
+                  className="text-white text-sm font-semibold px-6 py-2 rounded-lg disabled:opacity-30 hover:opacity-90 transition-all active:scale-[0.98]"
+                  style={{ background: "linear-gradient(135deg, #1a1a2e, #0f3460)" }}
+                >
+                  Next →
+                </button>
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
 
-      {/* Step 2: Write Caption */}
+      {/* ── STEP 2: Caption ── */}
       {step === 2 && (
-        <div className="bg-white border border-gray-200 rounded-lg">
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <button onClick={() => setStep(1)} className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
+              ← Back
+            </button>
+            <h2 className="text-sm font-semibold text-gray-900">Write Caption</h2>
+            <div className="w-10" />
+          </div>
+
           <form onSubmit={handleSubmit}>
-            <div className={`p-5 ${selectedPhoto ? "flex gap-4" : ""}`}>
-              {selectedPhoto && (
-                <div className="relative flex-shrink-0 w-48">
-                  <img
-                    src={selectedPhoto.preview}
-                    alt="Preview"
-                    className="w-48 h-48 object-cover rounded-md border border-gray-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => { setSelectedIndex(null); setStep(1); }}
-                    className="absolute top-1.5 right-1.5 bg-black/60 text-white rounded-sm w-5 h-5 text-xs flex items-center justify-center hover:bg-black/80"
-                  >
-                    ✕
-                  </button>
-                  <p className="text-xs text-gray-400 mt-1.5 text-center">
-                    <button type="button" onClick={() => setStep(1)} className="hover:text-gray-600 underline underline-offset-2">
-                      Change photo
-                    </button>
-                  </p>
-                </div>
-              )}
-              <div className="flex-1">
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder={selectedPhoto ? "Add a caption..." : "What's on your mind?"}
-                  rows={selectedPhoto ? 7 : 8}
-                  maxLength={500}
-                  autoFocus
-                  className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 leading-relaxed focus:outline-none"
+            {selectedPhoto && (
+              <div className="relative">
+                <img
+                  src={selectedPhoto.preview}
+                  alt="Preview"
+                  className="w-full object-cover border-b border-gray-100"
+                  style={{ maxHeight: 300 }}
                 />
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="absolute top-3 right-3 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-all hover:opacity-90"
+                  style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)" }}
+                >
+                  Change
+                </button>
               </div>
+            )}
+
+            <div className="p-5">
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder={selectedPhoto ? "Write a caption..." : "What's on your mind?"}
+                rows={5}
+                maxLength={500}
+                autoFocus
+                className="w-full resize-none text-sm text-gray-900 placeholder-gray-400 leading-relaxed focus:outline-none"
+              />
             </div>
 
-            <div className="border-t border-gray-100 px-5 py-3 flex items-center justify-between">
+            <div className="border-t border-gray-100 px-5 py-3.5 flex items-center justify-between">
               <span className={`text-xs ${remaining < 50 ? "text-orange-500" : "text-gray-400"}`}>
                 {remaining} left
               </span>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={goBack}
-                  className="text-xs text-gray-400 hover:text-gray-700 transition-colors"
-                >
-                  ← Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={!canPost}
-                  className="bg-gray-900 text-white text-xs font-semibold px-5 py-2 rounded-md hover:bg-gray-700 disabled:opacity-40 transition-colors"
-                >
-                  {loading ? "Posting..." : "Publish"}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={!canPost}
+                className="text-white text-sm font-semibold px-6 py-2 rounded-lg disabled:opacity-30 hover:opacity-90 transition-all active:scale-[0.98]"
+                style={{ background: canPost ? "linear-gradient(135deg, #1a1a2e, #0f3460)" : "#9ca3af" }}
+              >
+                {loading ? "Publishing..." : "Publish"}
+              </button>
             </div>
             {error && <p className="text-xs text-red-500 px-5 pb-3">{error}</p>}
           </form>

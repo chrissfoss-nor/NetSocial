@@ -22,6 +22,7 @@ export async function GET() {
       id: g.id,
       name: g.name,
       description: g.description,
+      website: g.website,
       createdAt: g.createdAt,
       memberCount: g._count.members,
       isMember: g.members.length > 0,
@@ -33,11 +34,11 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, description } = await req.json();
+  const { name, description, website } = await req.json();
   if (!name?.trim()) return NextResponse.json({ error: "Name required" }, { status: 400 });
 
   const group = await prisma.group.create({
-    data: { name: name.trim(), description: description?.trim() || null },
+    data: { name: name.trim(), description: description?.trim() || null, website: website?.trim() || null },
   });
 
   return NextResponse.json(group, { status: 201 });

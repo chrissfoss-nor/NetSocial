@@ -6,6 +6,7 @@ type Group = {
   id: string;
   name: string;
   description: string | null;
+  website: string | null;
   memberCount: number;
   isMember: boolean;
 };
@@ -38,6 +39,16 @@ function GroupCard({ group, onToggle }: { group: Group; onToggle: (id: string, j
         {group.description && (
           <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{group.description}</p>
         )}
+        {group.website && (
+          <a
+            href={group.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-blue-600 hover:underline mt-0.5 inline-block truncate max-w-xs"
+          >
+            {group.website.replace(/^https?:\/\//, "")}
+          </a>
+        )}
         <p className="text-xs text-gray-400 mt-1.5">
           {group.memberCount} member{group.memberCount !== 1 ? "s" : ""}
           {group.isMember && <span className="ml-2 text-blue-600 font-medium">· Joined</span>}
@@ -64,6 +75,7 @@ export default function GroupsPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
+  const [newWebsite, setNewWebsite] = useState("");
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
@@ -89,7 +101,7 @@ export default function GroupsPage() {
     const res = await fetch("/api/groups", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newName, description: newDesc }),
+      body: JSON.stringify({ name: newName, description: newDesc, website: newWebsite }),
     });
     setCreating(false);
     if (res.ok) {
@@ -97,6 +109,7 @@ export default function GroupsPage() {
       setGroups((prev) => [...prev, { ...group, memberCount: 0, isMember: false }]);
       setNewName("");
       setNewDesc("");
+      setNewWebsite("");
       setShowCreate(false);
     }
   }
@@ -144,6 +157,13 @@ export default function GroupsPage() {
               onChange={(e) => setNewDesc(e.target.value)}
               placeholder="Short description (optional)"
               maxLength={120}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-400 transition-colors"
+            />
+            <input
+              type="url"
+              value={newWebsite}
+              onChange={(e) => setNewWebsite(e.target.value)}
+              placeholder="Website URL (optional, e.g. https://example.com)"
               className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:border-gray-400 transition-colors"
             />
           </div>
