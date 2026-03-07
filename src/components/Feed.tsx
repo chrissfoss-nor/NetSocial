@@ -7,6 +7,7 @@ import PostComposer from "./PostComposer";
 type Post = {
   id: string;
   content: string;
+  imageUrl: string | null;
   createdAt: string;
   author: { id: string; name: string | null; username: string; image: string | null };
   _count: { likes: number; comments: number };

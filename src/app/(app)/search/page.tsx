@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 
 type User = {
   id: string;
@@ -10,7 +11,8 @@ type User = {
 };
 
 export default function SearchPage() {
-  const [query, setQuery] = useState("");
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [results, setResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);

@@ -5,6 +5,7 @@ import { useState } from "react";
 type Post = {
   id: string;
   content: string;
+  imageUrl: string | null;
   createdAt: string;
   author: { id: string; name: string | null; username: string; image: string | null };
   _count: { likes: number; comments: number };
@@ -56,7 +57,18 @@ export default function PostCard({
       </div>
 
       {/* Content */}
-      <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+      {post.content && (
+        <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{post.content}</p>
+      )}
+
+      {/* Image */}
+      {post.imageUrl && (
+        <img
+          src={post.imageUrl}
+          alt=""
+          className={`w-full object-cover rounded-md border border-gray-200 ${post.content ? "mt-3" : ""}`}
+        />
+      )}
 
       {/* Actions */}
       <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
