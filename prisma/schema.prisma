@@ -18,11 +18,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts     Post[]
-  likes     Like[]
-  comments  Comment[]
-  followers Follow[]  @relation("following")
-  following Follow[]  @relation("follower")
+  posts            Post[]
+  likes            Like[]
+  comments         Comment[]
+  followers        Follow[]      @relation("following")
+  following        Follow[]      @relation("follower")
+  groupMemberships GroupMember[]
 }
 
 model Post {
@@ -72,4 +73,25 @@ model Follow {
   followingId String
 
   @@unique([followerId, followingId])
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  members GroupMember[]
+}
+
+model GroupMember {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  @@unique([userId, groupId])
 }

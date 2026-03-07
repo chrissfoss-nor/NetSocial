@@ -12,6 +12,7 @@ const NAV = [
   { href: "/feed", label: "Feed" },
   { href: "/compose", label: "New Post" },
   { href: "/meet", label: "Meet Friends" },
+  { href: "/groups", label: "Groups" },
 ];
 
 export default function Navbar({ user }: Props) {
